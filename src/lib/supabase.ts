@@ -3,8 +3,11 @@ import AsyncStorage from '@react-native-async-storage/async-storage';
 import { createClient } from '@supabase/supabase-js';
 import { AppState } from 'react-native';
 
-const url = process.env.EXPO_PUBLIC_SUPABASE_URL ?? '';
-const anonKey = process.env.EXPO_PUBLIC_SUPABASE_ANON_KEY ?? '';
+const rawUrl = (process.env.EXPO_PUBLIC_SUPABASE_URL ?? '').trim();
+const anonKey = (process.env.EXPO_PUBLIC_SUPABASE_ANON_KEY ?? '').trim();
+
+// Strip any trailing slash or accidental /rest/v1 path from the URL
+const url = rawUrl.replace(/\/+rest\/v1\/?$/i, '').replace(/\/+$/, '');
 
 /** False until the person fills in their .env — the app then shows a setup screen instead of crashing. */
 export const isSupabaseConfigured = Boolean(url) && Boolean(anonKey) && !url.includes('YOUR_PROJECT_REF');
